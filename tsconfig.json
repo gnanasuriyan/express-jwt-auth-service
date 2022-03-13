@@ -1,0 +1,31 @@
+{
+	"compilerOptions": {
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"esModuleInterop": true,
+		"noImplicitAny": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"strict": true,
+		"module": "commonjs",
+		"pretty": true,
+		"types": [
+			"express",
+			"jest",
+			"node"
+		],
+		"outDir": "dist",
+		"sourceMap": true,
+		"target": "es6",
+		"allowJs": true,
+		"baseUrl": "."
+	},
+	"exclude": [
+		"node_modules"
+	],
+	"include": [
+		"./src/**/*.ts",
+		"./test/**/*.ts",
+		"server.ts"
+	]
+}
