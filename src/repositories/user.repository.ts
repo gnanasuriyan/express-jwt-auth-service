@@ -1,5 +1,5 @@
 import { MangoResponse } from "nano";
-import User from "src/models/user.model";
+import User from "../models/user.model";
 import db from "../utils/db";
 import { container, inject, singleton } from "tsyringe";
 import IUserRepository from "./user.repository.type";

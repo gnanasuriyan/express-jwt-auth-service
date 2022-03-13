@@ -6,7 +6,8 @@ import createHttpError from 'http-errors';
 
 import  AppLogger from "./utils/logger";
 import UserRouter from "./routes/user.router";
-import PassportStategy from "./middleware/passport";
+import PassportLocalStrategy from "./middleware/passport.local.strategy";
+import PassportJWTStategy from "./middleware/passport.jwt.strategy";
 
 const passport = require('passport');
 
@@ -16,7 +17,8 @@ class App {
     constructor(
         @inject(AppLogger) private appLogger: AppLogger,
         @inject(UserRouter) private userRouter: UserRouter,
-        @inject(PassportStategy) private passportSetup: PassportStategy
+        @inject(PassportLocalStrategy) private localStrategy: PassportLocalStrategy,
+        @inject(PassportJWTStategy) private jwtStrategy: PassportJWTStategy
     ) {
         this.app = express();
         this.config();
@@ -41,7 +43,8 @@ class App {
             res.send({status: true});
         });
 
-        this.passportSetup.setup(passport)
+        this.localStrategy.setup(passport)
+        this.jwtStrategy.setup(passport)
         passport.use(passport.initialize());
 
         this.app.use('/v1/users', this.userRouter.init());
@@ -52,7 +55,7 @@ class App {
         });
 
         // error handler
-        this.app.use((err: any, req: any, res: any, next: Function) => {
+        this.app.use((err: any, req: any, res: any, next: () => void) => {
             res.locals.message = err.message;
             res.locals.error = err;
             res.status(err.status || 500);

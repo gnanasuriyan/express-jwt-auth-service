@@ -5,14 +5,10 @@ import User from "../models/user.model";
 import AppLogger from "../utils/logger";
 import UserRepository from "../repositories/user.repository";
 
-const passportJWT = require("passport-jwt");
 const LocalStrategy = require('passport-local').Strategy;
 
-const ExtractJWT = passportJWT.ExtractJwt;
-const JWTStrategy   = passportJWT.Strategy;
-
 @singleton()
-class PassportStategy {
+class PassportLocalStrategy {
     constructor(
         @inject(AppLogger) public appLogger: AppLogger,
         @inject(UserRepository) public userRepo: UserRepository
@@ -38,24 +34,9 @@ class PassportStategy {
                 return done(err, false);
             });
         });
-
-        const jwtStrategy = new JWTStrategy({
-            jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-            secretOrKey   : process.env.JWT_SECRET
-        }, (jwtPayload: any, done: Function) => {
-            this.userRepo.findUserByEmail(jwtPayload.email).then((user: User) => {
-                this.appLogger.instance.info(`passport - extracting user details based on jwt email ${jwtPayload.email}`);
-                return done(null, user);
-            }).catch(err => {
-                this.appLogger.instance.error(`passport - finding user with ${jwtPayload.email} was failed. ${err.message}`);
-                return done(new Error('user doesn\'t exist'), false, { message: err.message });
-            });
-        });
-
         passport.use(localStrategy);
-        passport.use(jwtStrategy);
     }
 }
 
-container.registerSingleton<PassportStategy>(PassportStategy);
-export default PassportStategy;
+container.registerSingleton<PassportLocalStrategy>(PassportLocalStrategy);
+export default PassportLocalStrategy;

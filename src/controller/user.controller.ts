@@ -2,7 +2,6 @@ import { container, inject, singleton } from "tsyringe";
 import { Response } from "express";
 import AppLogger from "../utils/logger";
 import UserRepository from "../repositories/user.repository";
-import User from "../models/user.model";
 import IUserController from "./user.controller.type";
 
 const passport = require('passport');
